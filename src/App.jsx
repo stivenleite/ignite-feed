@@ -6,9 +6,10 @@ export function App() {
   return (
     <div>
       <Header />
-      <div className="max-w-5xl mx-auto my-8 px-4 grid grid-cols-[256px_1fr] items-start gap-8">
+      <div className="max-w-5xl mx-auto my-8 px-4 grid md:grid-cols-[256px_1fr] grid-cols-1 items-start gap-8">
         <Sidebar />
-        <div>
+        <div className="flex flex-col gap-8">
+          <Post />
           <Post />
         </div>
       </div>
