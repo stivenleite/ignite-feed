@@ -1,9 +1,16 @@
+import { format, formatDistanceToNow} from "date-fns"
+
 import { useState } from "react";
 import { Comment } from "./Comment";
 import { Avatar } from "./Avatar";
 
-export function Post() {
+export function Post({ author, content, publishedAt }) {
   const [writingComment, setWritingComment] = useState(false);
+
+  const publishedDateFormatted = format(publishedAt, "MMMM do',' uuuu")
+  const publishedDateToNow = formatDistanceToNow(publishedAt, {
+    addSuffix: true
+  })
 
   function checkTextarea(value) {
     if (value != "") {
@@ -17,39 +24,41 @@ export function Post() {
     <article className="p-10 bg-gray2 rounded-lg">
       <header className="flex justify-between items-center">
         <div className="flex gap-4">
-          <Avatar hasBorder src="https://github.com/stivenleite.png" />
+          <Avatar hasBorder src={author.avatarUrl} />
           <div className="flex flex-col justify-center">
-            <strong className="text-gray7">Stiven Leite</strong>
-            <span className="text-sm text-gray5">Web Developer</span>
+            <strong className="text-gray7">{author.name}</strong>
+            <span className="text-sm text-gray5">{author.role}</span>
           </div>
         </div>
-        <time className="text-sm text-gray5" title="">
-          1h ago
+        <time className="text-sm text-gray5" title={publishedDateFormatted} dateTime={publishedAt.toISOString()}>
+          {publishedDateToNow}
         </time>
       </header>
       <div className="flex flex-col gap-4 my-6">
-        <p>Fala galeraa 👋</p>
-        <p>
-          Acabei de subir mais um projeto no meu portifa. É um projeto que fiz
-          no NLW Return, evento da Rocketseat. O nome do projeto é DoctorCare 🚀
-        </p>
-        <p className="text-green-light font-bold flex gap-2 ">
-          <span>👉</span>
-          <a href="" className="hover:text-green-dark">
-            jane.design/doctorcare
-          </a>
-        </p>
-        <p className="text-green-light font-bold flex gap-2">
-          <a href="" className="hover:text-green-dark">
-            #novoprojeto
-          </a>
-          <a href="" className="hover:text-green-dark">
-            #nlw
-          </a>
-          <a href="" className="hover:text-green-dark">
-            #rocketseat
-          </a>
-        </p>
+        {
+          content.map(line => {
+            if (line.type == "paragraph") {
+               return <p>{line.value}</p>
+            } else if (line.type == "link") {
+              return (
+                <p className="text-green-light font-bold flex gap-2 ">
+                <span>👉</span>
+                <a href="" className="hover:text-green-dark">
+                  {line.value}
+                </a>
+                </p>
+              )
+            } else if (line.type == "hashtags") {
+              return (
+                <p className="text-green-light font-bold flex gap-2">
+                  {line.value.map(hashtag => {
+                    return <a href="" className="hover:text-green-dark">{hashtag}</a>
+                  })}
+                </p>
+              )
+            }
+          })
+        }
       </div>
       <form className="flex flex-col gap-4 pt-6 border-t-[1px] border-gray3">
         <strong className="text-gray7">Leave your feedback</strong>
