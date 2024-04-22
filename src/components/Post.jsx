@@ -3,22 +3,36 @@ import { format, formatDistanceToNow} from "date-fns"
 import { useState } from "react";
 import { Comment } from "./Comment";
 import { Avatar } from "./Avatar";
+import { comment } from "postcss";
 
 export function Post({ author, content, publishedAt }) {
   const [writingComment, setWritingComment] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
 
   const publishedDateFormatted = format(publishedAt, "MMMM do',' uuuu")
   const publishedDateToNow = formatDistanceToNow(publishedAt, {
     addSuffix: true
   })
 
-  function checkTextarea(value) {
-    if (value != "") {
+  function handleNewComment() {
+    setNewComment(event.target.value)
+
+    if (event.target.value != "") {
       setWritingComment(true);
     } else {
       setWritingComment(false);
     }
   }
+
+  function handlePostComment() {
+    event.preventDefault()
+    
+    setComments([...comments, newComment])
+    setNewComment('')
+  }
+
+  
 
   return (
     <article className="p-10 bg-gray2 rounded-lg">
@@ -60,11 +74,15 @@ export function Post({ author, content, publishedAt }) {
           })
         }
       </div>
-      <form className="flex flex-col gap-4 pt-6 border-t-[1px] border-gray3">
+      <form 
+        onSubmit={handlePostComment}
+        className="flex flex-col gap-4 pt-6 border-t-[1px] border-gray3"
+      >
         <strong className="text-gray7">Leave your feedback</strong>
         <textarea
-          onChange={(e) => checkTextarea(e.target.value)}
+          onChange={handleNewComment}
           placeholder="Write a comment..."
+          value={newComment}
           className="bg-gray1 placeholder:text-gray4 rounded-lg p-4 h-24 resize-none"
         />
         {writingComment && (
@@ -77,9 +95,13 @@ export function Post({ author, content, publishedAt }) {
         )}
       </form>
       <div className="flex flex-col gap-6 mt-8">
-        <Comment />
-        <Comment />
-        <Comment />
+        {
+          comments.map(comment => {
+            return (
+              <Comment content={comment}/>
+            )
+          })
+        }
       </div>
     </article>
   );

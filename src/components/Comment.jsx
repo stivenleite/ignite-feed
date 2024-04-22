@@ -1,7 +1,7 @@
 import { Trash2, ThumbsUp } from "lucide-react";
 import { Avatar } from "./Avatar";
 
-export function Comment() {
+export function Comment({ content }) {
   return (
     <div className="flex items-start gap-4 text-sm">
       <Avatar hasBorder={false} src="https://github.com/stivenleite.png" />
@@ -23,7 +23,7 @@ export function Comment() {
               <Trash2 size={20} />
             </button>
           </header>
-          <p>Muito bom Devon, parabéns!! 👏👏</p>
+          <p>{content}</p>
         </div>
         <footer>
           <button
