@@ -3,7 +3,6 @@ import { format, formatDistanceToNow} from "date-fns"
 import { useState } from "react";
 import { Comment } from "./Comment";
 import { Avatar } from "./Avatar";
-import { comment } from "postcss";
 
 export function Post({ author, content, publishedAt }) {
   const [writingComment, setWritingComment] = useState(false);
@@ -30,6 +29,15 @@ export function Post({ author, content, publishedAt }) {
     
     setComments([...comments, newComment])
     setNewComment('')
+    setWritingComment(false);
+  }
+
+  function deleteComment(commentToDelete) {
+    const commentsWithoutDeletedOne = comments.filter(comment => {
+      return comment !== commentToDelete
+    })
+
+    setComments(commentsWithoutDeletedOne)
   }
 
   
@@ -52,21 +60,21 @@ export function Post({ author, content, publishedAt }) {
         {
           content.map(line => {
             if (line.type == "paragraph") {
-               return <p>{line.value}</p>
+               return <p key={line.value}>{line.value}</p>
             } else if (line.type == "link") {
               return (
-                <p className="text-green-light font-bold flex gap-2 ">
-                <span>👉</span>
-                <a href="" className="hover:text-green-dark">
-                  {line.value}
-                </a>
+                <p key={line.value} className="text-green-light font-bold flex gap-2 ">
+                  <span>👉</span>
+                  <a href="" className="hover:text-green-dark">
+                    {line.value}
+                  </a>
                 </p>
               )
             } else if (line.type == "hashtags") {
               return (
-                <p className="text-green-light font-bold flex gap-2">
+                <p key={line.value} className="text-green-light font-bold flex gap-2">
                   {line.value.map(hashtag => {
-                    return <a href="" className="hover:text-green-dark">{hashtag}</a>
+                    return <a key={hashtag} href="" className="hover:text-green-dark">{hashtag}</a>
                   })}
                 </p>
               )
@@ -98,7 +106,11 @@ export function Post({ author, content, publishedAt }) {
         {
           comments.map(comment => {
             return (
-              <Comment content={comment}/>
+              <Comment 
+                key={comment} 
+                content={comment}
+                onDeleteComment = {deleteComment}
+              />
             )
           })
         }

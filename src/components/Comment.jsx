@@ -1,7 +1,20 @@
 import { Trash2, ThumbsUp } from "lucide-react";
 import { Avatar } from "./Avatar";
+import { useState } from "react";
 
-export function Comment({ content }) {
+export function Comment({ content, onDeleteComment }) {
+  const [likeCount, setLikeCount] = useState(0);
+
+  function handleDeleteComment() {
+    onDeleteComment(content)
+  }
+
+  function handleLikeComment() {
+    setLikeCount((state) => {
+      return state + 1
+    });
+  }
+
   return (
     <div className="flex items-start gap-4 text-sm">
       <Avatar hasBorder={false} src="https://github.com/stivenleite.png" />
@@ -20,7 +33,7 @@ export function Comment({ content }) {
               type="button"
               className="text-gray5 hover:text-red-danger"
             >
-              <Trash2 size={20} />
+              <Trash2 size={20} onClick={handleDeleteComment} />
             </button>
           </header>
           <p>{content}</p>
@@ -29,9 +42,10 @@ export function Comment({ content }) {
           <button
             type="button"
             className="flex items-center text-gray5 hover:text-gray7"
+            onClick={handleLikeComment}
           >
             <ThumbsUp size={20} className="mr-2 mt-[-4px]" />
-            <strong>Like • 20</strong>
+            <strong>Like • {likeCount}</strong>
           </button>
         </footer>
       </div>

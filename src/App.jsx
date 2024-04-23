@@ -44,7 +44,8 @@ export function App() {
         <div className="flex flex-col gap-8">
           {posts.map(post => {
             return(
-              <Post 
+              <Post
+                key={post.id} 
                 author={post.author}
                 content={post.content}
                 publishedAt={post.publishedAt}
